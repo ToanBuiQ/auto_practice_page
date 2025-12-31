@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Practice - Registration Form</title>
+    <meta name="description"
+        content="A demo page for practicing automation testing with various form elements suited for Selenium, Playwright, and Cypress.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/assets/css/style.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-item,
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-item input,
+        .checkbox-item input {
+            width: auto;
+            accent-color: var(--primary-color);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">AutoPractice<span style="color:var(--text-main)">.AI</span></div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link active">Registration Form</a>
+            <a href="interaction.html" class="nav-link">Interaction</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="form-container fade-in">
+            <div class="card">
+                <h1>Student Registration</h1>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Fill out the form below to practice input
+                    handling, validation, and submission.</p>
+
+                <form id="practiceForm">
+                    <div class="form-grid">
+                        <!-- Full Name -->
+                        <div class="form-group full-width">
+                            <label for="fullName">Full Name <span style="color: var(--secondary-color)">*</span></label>
+                            <input type="text" id="fullName" name="fullName" placeholder="e.g. John Doe"
+                                data-test="full-name-input" required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email">Email Address <span
+                                    style="color: var(--secondary-color)">*</span></label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com"
+                                data-test="email-input" required>
+                        </div>
+
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" placeholder="johndoe123"
+                                data-test="username-input">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label for="password">Password <span style="color: var(--secondary-color)">*</span></label>
+                            <input type="password" id="password" name="password" placeholder="••••••••"
+                                data-test="password-input" required>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender" data-test="gender-select">
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country" name="country" data-test="country-select">
+                                <option value="usa">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="vn">Vietnam</option>
+                                <option value="jp">Japan</option>
+                                <option value="de">Germany</option>
+                            </select>
+                        </div>
+
+                        <!-- DOB -->
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" data-test="dob-input">
+                        </div>
+
+                        <!-- Skills (Custom Multi-select) -->
+                        <div class="form-group full-width">
+                            <label for="skills">Skills (Search & Select)</label>
+                            <div class="custom-multiselect" id="skillsMultiselect" data-test="skills-multiselect">
+                                <div class="selected-container">
+                                    <div class="selected-tags" id="selectedTags"></div>
+                                    <input type="text" class="search-input" id="skillsSearch"
+                                        placeholder="Search or select skills..." data-test="skills-search">
+                                    <div class="caret">▼</div>
+                                </div>
+                                <!-- Hidden native select for form data -->
+                                <select id="skills" name="skills" multiple style="display:none">
+                                    <option value="automation">Automation Testing</option>
+                                    <option value="manual">Manual Testing</option>
+                                    <option value="api">API Testing</option>
+                                    <option value="performance">Performance Testing</option>
+                                    <option value="security">Security Testing</option>
+                                    <option value="mobile">Mobile Testing</option>
+                                    <option value="database">Database Testing</option>
+                                </select>
+                                <!-- Custom Dropdown -->
+                                <div class="options-dropdown" id="skillsDropdown">
+                                    <!-- Options will be populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Type (Radio) -->
+                        <div class="form-group full-width">
+                            <label>Account Type</label>
+                            <div class="radio-group" data-test="account-type-group">
+                                <label class="radio-item">
+                                    <input type="radio" name="accountType" value="basic" checked> Basic
+                                </label>
+                                <label class="radio-item">
+                                    <input type="radio" name="accountType" value="premium"> Premium <span
+                                        style="font-size:0.8em; color:var(--secondary-color); font-weight:700; margin-left:4px">PRO</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Interests (Checkbox) -->
+                        <div class="form-group full-width">
+                            <label>Interests</label>
+                            <div class="checkbox-group" data-test="interests-group">
+                                <label class="checkbox-item"><input type="checkbox" name="interests" value="testing">
+                                    Testing</label>
+                                <label class="checkbox-item"><input type="checkbox" name="interests" value="coding">
+                                    Coding</label>
+                                <label class="checkbox-item"><input type="checkbox" name="interests" value="devops">
+                                    DevOps</label>
+                                <label class="checkbox-item"><input type="checkbox" name="interests" value="ai">
+                                    AI</label>
+                            </div>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group full-width">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" rows="3" placeholder="Street, City, Zip Code"
+                                data-test="address-textarea"></textarea>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="form-group full-width">
+                            <label for="avatar">Upload Avatar/CV</label>
+                            <input type="file" id="avatar" name="avatar" data-test="file-input">
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="form-group full-width">
+                            <label class="checkbox-item">
+                                <input type="checkbox" id="terms" name="terms" required data-test="terms-checkbox">
+                                I accept the Terms and Conditions
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn btn-outline" id="resetBtn" data-test="reset-btn">Reset</button>
+                        <button type="submit" class="btn btn-primary" id="submitBtn"
+                            data-test="submit-btn">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Automation Practice Demo. Built for Educational Purposes.</p>
+    </footer>
+
+    <script type="module" src="src/assets/js/common.js"></script>
+    <script type="module" src="src/assets/js/registration.js"></script>
+</body>
+
+</html>
